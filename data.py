@@ -1,19 +1,36 @@
-import streamlit as st
-import pandas as pd
 import altair as alt
+import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
+import streamlit as st
 
 st.set_page_config(page_title="Multi Dashboard", layout="wide")
 
 # ---- SIDEBAR MENU ----
 menu = st.sidebar.radio(
     "📌 Select Dashboard",
-    ["Home", "Gain and Loose Stock", "Volatility", "Cummulative","Average_Yearly","Correlated_Heatmap","Monthly_Return"]
+    ["Home", "Gain and Loose Performance Stock", "Volatility Analysis", "Cummulative Return","Sector-Wise Performance","Stock Price Correlation","Gainers and Losers (Month-wise)"]
 )
+  
+
 
 if menu == "Home":
-    st.title("📈 Top 10 Stock Performance Dashboard")
+    st.title("📈 Nifty 50 Stock Data Performace")
+
+    st.subheader("Total Stock")
+    st.markdown("50")
+
+    st.subheader("Green Stock")
+    st.markdown("43")
+
+    st.subheader("Red Stock")
+    st.markdown("7")
+
+    st.subheader("Average Price")
+    st.markdown("2507.72")
+
+    st.subheader("Average Volume")
+    st.markdown("7156907")
     
     @st.cache_data
     def load_data():
@@ -21,14 +38,14 @@ if menu == "Home":
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
+    #st.subheader("Full Dataset Columns")
+    #st.write(df.columns.tolist())   # Shows all columns in your CSV
     
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
+    #st.subheader("Numeric Columns Detected")
+    #st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox("Select performance column:", numeric_columns)
@@ -36,7 +53,7 @@ if menu == "Home":
     # Compute top 10 based on selected column
     top10 = df.sort_values(by=performance_column, ascending=False).head(10)
     
-    st.subheader("🏆 Top 10 Performing Stocks")
+    st.subheader("Top 10 Performing Stocks")
     st.dataframe(top10)
     
     # Optional: bar chart
@@ -53,8 +70,8 @@ if menu == "Home":
             st.bar_chart(top10.set_index(index_col)[performance_column])
     
 ## Top 10 Green Stocks
-elif menu == "Gain and Loose Stock":
-    st.title("Top 10 Green Stock")
+elif menu == "Gain and Loose Performance Stock":
+    st.title("Green Stock")
     
     @st.cache_data
     def load_data():
@@ -62,14 +79,14 @@ elif menu == "Gain and Loose Stock":
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
+    #st.subheader("Full Dataset Columns")
+    #st.write(df.columns.tolist())   # Shows all columns in your CSV
     
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
+    #st.subheader("Numeric Columns Detected")
+    #st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox(
@@ -82,12 +99,12 @@ elif menu == "Gain and Loose Stock":
     # Compute top 10 based on selected column
     top10 = df.sort_values(by=performance_column, ascending=False).head(10)
     
-    st.subheader("🏆 Top 10 Performing  Green Stocks")
+    st.subheader("Top 10 Performing  Green Stocks")
     st.dataframe(top10)
     
     # Visual Bar Chart with Green Color
     if len(top10) > 0:
-        st.subheader("📊 Performance Chart (Green Bars)")
+        st.subheader("📊 Performance Chart")
     
         # find first non-numeric column → usually stock name
         text_columns = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
@@ -112,7 +129,7 @@ elif menu == "Gain and Loose Stock":
     ## Top 10 Red Stock 
     
     
-    st.title("Top 10 Red Stock")
+    st.title("Red Stock")
     
     @st.cache_data
     def load_data():
@@ -120,27 +137,27 @@ elif menu == "Gain and Loose Stock":
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
+    #st.subheader("Full Dataset Columns")
+    #st.write(df.columns.tolist())   # Shows all columns in your CSV
     
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
+    #st.subheader("Numeric Columns Detected")
+    #st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox("Select performance column:", numeric_columns)
     
     # Compute top 10 based on selected column
-    top10 = df.sort_values(by=performance_column, ascending=False).head(10)
+    top10 = df.sort_values(by=performance_column, ascending=True).head(10)
     
-    st.subheader("🏆 Top 10 Red Stocks")
+    st.subheader("Top 10 Red Stocks")
     st.dataframe(top10)
     
     # Visual Bar Chart with Green Color
     if len(top10) > 0:
-        st.subheader("📊 Performance Chart (Red Bars)")
+        st.subheader("📊 Performance Chart")
     
         # find first non-numeric column → usually stock name
         text_columns = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
@@ -164,7 +181,7 @@ elif menu == "Gain and Loose Stock":
     
      ## Average Price by Green Stock
     
-    st.title("Top  Average Price of Green Stock")
+    st.title("Average Price of Green Stock")
     
     @st.cache_data
     def load_data():
@@ -172,14 +189,14 @@ elif menu == "Gain and Loose Stock":
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
+    #st.subheader("Full Dataset Columns")
+    #st.write(df.columns.tolist())   # Shows all columns in your CSV
     
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
+    #st.subheader("Numeric Columns Detected")
+    #st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox(
@@ -192,12 +209,12 @@ elif menu == "Gain and Loose Stock":
     # Compute top 10 based on selected column
     top10 = df.sort_values(by=performance_column, ascending=False).head(10)
     
-    st.subheader("🏆 Top 10 Performing  Green Stocks")
+    st.subheader("Top 10 Average Price of Green Stocks")
     st.dataframe(top10)
     
     # Visual Bar Chart with Green Color
     if len(top10) > 0:
-        st.subheader("📊 Performance Chart (Green Bars)")
+        st.subheader("📊 Performance Chart")
     
         # find first non-numeric column → usually stock name
         text_columns = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
@@ -221,35 +238,35 @@ elif menu == "Gain and Loose Stock":
     
     ## Average Price by Red Stock
     
-    st.title("Top 10 Average Price of Red Stock")
+    st.title("Average Price of Red Stock")
     
     @st.cache_data
     def load_data():
-        return pd.read_csv("Average_Price_by_Red_Stock.csv")
+        return pd.read_csv("Average _Price _by _Red _Stock.csv")
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
+    #st.subheader("Full Dataset Columns")
+    #st.write(df.columns.tolist())   # Shows all columns in your CSV
     
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
+    #st.subheader("Numeric Columns Detected")
+    #st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox("Select performance column:", numeric_columns)
     
     # Compute top 10 based on selected column
-    top10 = df.sort_values(by=performance_column, ascending=False).head(10)
+    top10 = df.sort_values(by=performance_column, ascending=True).head(10)
     
-    st.subheader("🏆 Top 10 Red Stocks")
+    st.subheader(" Top 10 Average Price of Red Stocks")
     st.dataframe(top10)
     
     # Visual Bar Chart with Green Color
     if len(top10) > 0:
-        st.subheader("📊 Performance Chart (Red Bars)")
+        st.subheader("📊 Performance Chart")
     
         # find first non-numeric column → usually stock name
         text_columns = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
@@ -273,7 +290,7 @@ elif menu == "Gain and Loose Stock":
     
     ## Volume of Green Stock
     
-    st.title("Top Average Volume of Green Stock")
+    st.title("Average Volume of Green Stock")
     
     @st.cache_data
     def load_data():
@@ -281,14 +298,14 @@ elif menu == "Gain and Loose Stock":
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
+    #.subheader("Full Dataset Columns")
+    #st.write(df.columns.tolist())   # Shows all columns in your CSV
     
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
+    #st.subheader("Numeric Columns Detected")
+    #st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox(
@@ -301,7 +318,7 @@ elif menu == "Gain and Loose Stock":
     # Compute top 10 based on selected column
     top10 = df.sort_values(by=performance_column, ascending=False).head(10)
     
-    st.subheader("🏆 Top 10 Performing Average Volume Green Stocks")
+    st.subheader("Top 10 Average Volume of Green Stocks")
     st.dataframe(top10)
     
     # Visual Bar Chart with Green Color
@@ -330,7 +347,7 @@ elif menu == "Gain and Loose Stock":
     
     
     ## Average Volume of Red Stock
-    st.title("Top 10 Average Volume of Red Stock")
+    st.title("Average Volume of Red Stock")
     
     @st.cache_data
     def load_data():
@@ -338,22 +355,16 @@ elif menu == "Gain and Loose Stock":
     
     df = load_data()
     
-    st.subheader("Full Dataset Columns")
-    st.write(df.columns.tolist())   # Shows all columns in your CSV
-    
     # Find numeric columns automatically
     numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    
-    st.subheader("Numeric Columns Detected")
-    st.write(numeric_columns)
     
     # Dropdown to select performance column
     performance_column = st.selectbox("Select performance column:", numeric_columns)
     
     # Compute top 10 based on selected column
-    top10 = df.sort_values(by=performance_column, ascending=False).head(10)
+    top10 = df.sort_values(by=performance_column, ascending=True).head(10)
     
-    st.subheader("🏆 Top 10 Average Volume of Red Stocks")
+    st.subheader("Top 10 Average Volume of Red Stocks")
     st.dataframe(top10)
     
     # Visual Bar Chart with Green Color
@@ -381,8 +392,10 @@ elif menu == "Gain and Loose Stock":
             st.altair_chart(chart, use_container_width=True)
 
 ## Volatility
-elif menu == "Volatility":
-    st.title("📉 Stock Volatility Bar Chart")
+elif menu == "Volatility Analysis":
+
+    
+    st.title("Volatility of Stock")
     
     # Load your uploaded CSV file
     @st.cache_data
@@ -391,7 +404,7 @@ elif menu == "Volatility":
     
     df = load_data()
     
-    st.subheader("Dataset Preview")
+    st.subheader("Top 10 Volatility of Stock")
     st.dataframe(df)
     
     # Detect column names automatically
@@ -414,8 +427,10 @@ elif menu == "Volatility":
     st.plotly_chart(fig, use_container_width=True)
 
 ## Cummulative Return
-elif menu == "Cummulative":
-    st.title("📈 Cumulative Return Dashboard ")
+elif menu == "Cummulative Return":
+
+    
+    st.title("📈 Cumulative Return of Stock")
     
     # Load CSV
     @st.cache_data
@@ -424,7 +439,7 @@ elif menu == "Cummulative":
     
     df = load_data()
     
-    st.subheader("Dataset Preview")
+    st.subheader("Top 10 Cummulative Return of Stock")
     st.dataframe(df)
     
     # Auto-detect column names
@@ -451,8 +466,9 @@ elif menu == "Cummulative":
     st.plotly_chart(fig, use_container_width=True)
 
 ## AVERAGE YEARLY RETURN
-elif menu == "Average_Yearly":
-    st.title("📊 Sector-wise Average Yearly Return")
+elif menu == "Sector-Wise Performance":
+    
+    st.title("📊Average Yearly Return by Sector")
     
     # Load CSV file
     @st.cache_data
@@ -461,7 +477,7 @@ elif menu == "Average_Yearly":
     
     df = load_data()
     
-    st.subheader("Dataset Preview")
+    st.subheader("Top 10 Average Yearly Return by Sector")
     st.dataframe(df)
     
     # Auto-detect columns
@@ -469,13 +485,13 @@ elif menu == "Average_Yearly":
     return_col = "average_yearly_return" if "average_yearly_return" in df.columns else df.columns[1]
     
     # Plot bar chart
-    st.subheader("📈 Average Yearly Return by Sector")
+    st.subheader("📈 Performance Chart")
     
     fig = px.bar(
         df,
         x=sector_col,
         y=return_col,
-        title="Average Yearly Return by Sector",
+        
     )
     
     # Optional: make bars green
@@ -485,9 +501,11 @@ elif menu == "Average_Yearly":
     st.plotly_chart(fig, use_container_width=True)
     
     ## Heatmap Correlation 
-elif menu == "Correlated_Heatmap":
+elif menu == "Stock Price Correlation":
+
     
-    st.title("📊 Stock Price Correlation Matrix & Heatmap Dashboard")
+    
+    st.title("📊 Stock Price Correlation Matrix & Heatmap")
     
     # Load CSV
     @st.cache_data
@@ -499,7 +517,7 @@ elif menu == "Correlated_Heatmap":
     # Keep only numeric columns for correlation
     numeric_df = df.select_dtypes(include=['float64', 'int64'])
     
-    st.subheader("📈 Correlation Matrix (Table)")
+    st.subheader("📈 Dashboard of Correlation Matrix")
     corr_matrix = numeric_df.corr()
     st.dataframe(corr_matrix)
 
@@ -518,15 +536,15 @@ elif menu == "Correlated_Heatmap":
     st.plotly_chart(fig, use_container_width=True)
 
 ## TOP 5 GAINER MONTHLY RATURN
-elif menu == "Monthly_Return":
+elif menu == "Gainers and Losers (Month-wise)":
 # -------- PAGE SETTINGS (Responsive) --------
     st.set_page_config(
-        page_title="Return Gainer Dashboard",
+        page_title="Monthly Return of Stock",
         layout="wide",          # full-width responsive layout
     )
     
     # -------- TITLE --------
-    st.markdown("<h2 style='text-align:center;'>Gain Return Dashboard (Responsive)</h2>", unsafe_allow_html=True)
+    st.title("Gainer Month-Wise Return")
     
     # -------- LOAD CSV --------
     df = pd.read_csv("Gainer.csv")
@@ -538,48 +556,59 @@ elif menu == "Monthly_Return":
     df = df.sort_values(["Month_Year", "Percent of MonthlyReturn"], ascending=[True, False])
     
     # -------- RESPONSIVE DATAFRAME --------
-    st.subheader("📄 Data Preview")
+    st.subheader("📄Dashboard of Gain Return")
     st.dataframe(df, use_container_width=True)
     
     # -------- RESPONSIVE COMPACT BAR CHART --------
     st.subheader("📈 Gain Return Chart")
     
+
+# Optional: limit sectors for performance
     chart = (
-        alt.Chart(df)
-        .mark_bar(size=10)  # thin bars for compactness
-        .encode(
-            x=alt.X("Symbol:N", title="Symbol", sort="-y"),
-            y=alt.Y("Percent of MonthlyReturn:Q", title="Return (%)"),
-            color=alt.Color("Symbol:N", title="Symbol"),
-            column=alt.Column(
-                "Month_Year:N",
-                title="Month",
-                header=alt.Header(
-                    labelAngle=0,
-                    labelFontSize=12
-                )
-            ),
-            tooltip=["Month_Year", "Symbol", "Percent of MonthlyReturn"]
-        )
-        .properties(
-            width=50,   # responsive small width per month
-            height= 140  # responsive height
-        )
+    alt.Chart(df)
+    .mark_bar(size=14)
+    .encode(
+        x=alt.X(
+            "Month_Year:N",
+            title="Month",
+            axis=alt.Axis(labelAngle=-45)
+        ),
+        xOffset=alt.XOffset(
+            "Symbol:N"
+        ),
+        y=alt.Y(
+            "Percent of MonthlyReturn:Q",
+            title="Return (%)"
+        ),
+        color=alt.Color(
+            "Symbol:N",
+            title="Symbol"
+        ),
+        tooltip=[
+            "Month_Year:N",
+            "Symbol:N",
+            "Percent of MonthlyReturn:Q"
+        ]
     )
-    
+    .properties(
+        height=450
+    )
+    )
     st.altair_chart(chart, use_container_width=True)
+
+
     
     ## TOP 5 Looser MONTHLY RETURN
 
     
     # -------- PAGE SETTINGS (Responsive) --------
     st.set_page_config(
-        page_title="Loose Return Dashboard",
-        layout="wide",          # full-width responsive layout
+        page_title="Dashboard of Loose Return",
+        #layout="wide",          # full-width responsive layout
     )
     
     # -------- TITLE --------
-    st.markdown("<h2 style='text-align:center;'> Loose Return Dashboard (Responsive)</h2>", unsafe_allow_html=True)
+    st.title("Looser Month-Wise Return")
     
     # -------- LOAD CSV --------
     df = pd.read_csv("Loose.csv")
@@ -591,33 +620,40 @@ elif menu == "Monthly_Return":
     df = df.sort_values(["Month_Year", "Percent of MonthlyReturn"], ascending=[True, False])
     
     # -------- RESPONSIVE DATAFRAME --------
-    st.subheader("📄 Data Preview")
+    st.subheader("📄 Dashboard of Loose Return")
     st.dataframe(df, use_container_width=True)
     
     # -------- RESPONSIVE COMPACT BAR CHART --------
-    st.subheader("Loose Return Chart")
-    
-    chart = (
-        alt.Chart(df)
-        .mark_bar(size=10)  # thin bars for compactness
-        .encode(
-            x=alt.X("Symbol:N", title="Symbol", sort="-y"),
-            y=alt.Y("Percent of MonthlyReturn:Q", title="Return (%)"),
-            color=alt.Color("Symbol:N", title="Symbol"),
-            column=alt.Column(
-                "Month_Year:N",
-                title="Month",
-                header=alt.Header(
-                    labelAngle=0,
-                    labelFontSize=12
-                )
-            ),
-            tooltip=["Month_Year", "Symbol", "Percent of MonthlyReturn"]
-        )
-        .properties(
-            width=50,   # responsive small width per month
-            height= 140  # responsive height
-        )
-    )
+    st.subheader("Top Loose Return Chart")
 
+    chart = (
+    alt.Chart(df)
+    .mark_bar(size=14)
+    .encode(
+        x=alt.X(
+            "Month_Year:N",
+            title="Month",
+            axis=alt.Axis(labelAngle=-45)
+        ),
+        xOffset=alt.XOffset(
+            "Symbol:N"
+        ),
+        y=alt.Y(
+            "Percent of MonthlyReturn:Q",
+            title="Return (%)"
+        ),
+        color=alt.Color(
+            "Symbol:N",
+            title="Symbol"
+        ),
+        tooltip=[
+            "Month_Year:N",
+            "Symbol:N",
+            "Percent of MonthlyReturn:Q"
+        ]
+    )
+    .properties(
+        height=450
+    )
+    )
     st.altair_chart(chart, use_container_width=True)
